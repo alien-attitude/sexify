@@ -1,0 +1,18 @@
+{
+  "name": "sexify",
+  "version": "0.0.0",
+  "description": "GET /api/classify — wraps the Genderize API with confidence scoring",
+  "main": "app.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
