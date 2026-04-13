@@ -14,6 +14,14 @@ app.use((req, res, next) => {
     next();
 })
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'API is running',
+    endpoints: ['/api/classify?name={name}'],
+  });
+});
+
 // GET api/classify
 app.get('/api/classify', classify)
 
