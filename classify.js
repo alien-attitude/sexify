@@ -48,17 +48,19 @@ const classify = async (req, res) => {
     }
 
     // Edge cases: null gender/ zero counts
-    if (genderizeData.gender === null || genderizeData.count === 0) {
-        return errorResponse(res, 200, "No prediction available for the provided name");
-        // Note: spec shows this as an error body but doesn't mandate a non-200 status for
-        // this edge case — returning 200 with error status keeps grading scripts happy.
-        // Adjust to 404 if the rubric expects it.
+    const rawCount = genderizeData.count;
+    const rawGender = genderizeData.gender;
+
+    if (rawGender === null || rawGender === undefined || rawCount === null || rawCount === 0) {
+        return errorResponse(res, 422, "No prediction available for the provided name");
     }
 
     // Process
-    const probability = genderizeData.probability;
-    const sample_size = genderizeData.count;
-    const is_confident = probability >= 0.7 && sample_size >= 100;
+    const probability  = Number(genderizeData.probability);
+    const sample_size  = Number(rawCount);
+
+    // Both conditions must be true; explicit boolean cast avoids any coercion edge case
+    const is_confident = Boolean(probability >= 0.7 && sample_size >= 100);
 
     return res.status(200).json({
         status: "success",
