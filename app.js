@@ -1,20 +1,23 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import express from 'express'
+import classify from './classify.js'
+import {errorResponse} from './classify.js'
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
-var app = express();
+// CORS
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') {res.sendStatus(204)}
+    next();
+})
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// GET api/classify
+app.get('/api/classify', classify)
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// 404- catch all
+app.use((req, res) => errorResponse(res, 404, "Not Found"))
 
-module.exports = app;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
